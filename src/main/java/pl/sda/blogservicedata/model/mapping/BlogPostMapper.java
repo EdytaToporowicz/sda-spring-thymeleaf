@@ -9,6 +9,7 @@ public class BlogPostMapper {
 
     public BlogPost map(final BlogPostDto blogPostDto) {
         final BlogPost blogPost = new BlogPost();
+        blogPost.setAuthor(blogPostDto.getAuthor());
         blogPost.setTitle(blogPostDto.getTitle());
         blogPost.setContent(blogPostDto.getContent());
         blogPost.setTopic(blogPostDto.getTopic());
