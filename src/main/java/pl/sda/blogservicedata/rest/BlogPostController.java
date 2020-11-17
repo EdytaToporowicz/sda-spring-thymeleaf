@@ -22,11 +22,12 @@ public class BlogPostController {
     }
 
     @GetMapping(path = "/blogPosts", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public ResponseEntity<List<BlogPost>> findByTopic(final @RequestParam(required = false) Topic topic) {
-        if (null != topic) {
-            return ResponseEntity.ok(blogPostService.findByTopic(topic));
-        }
-        return ResponseEntity.ok(blogPostService.findAll());
+    public ResponseEntity<List<BlogPost>> findByFilter(
+            final @RequestParam(required = false) Topic topic,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String titlePhrase
+    ) {
+        return ResponseEntity.ok(blogPostService.findByFilter(topic, author, titlePhrase));
     }
 
     @GetMapping(path = "/blogPosts/{blogPostId}", produces = {MediaType.APPLICATION_JSON_VALUE,
