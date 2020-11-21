@@ -1,5 +1,6 @@
 package pl.sda.blogservicedata.rest;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,9 +26,10 @@ public class BlogPostController {
     public ResponseEntity<List<BlogPost>> findByFilter(
             final @RequestParam(required = false) Topic topic,
             @RequestParam(required = false) String author,
-            @RequestParam(required = false) String titlePhrase
+            @RequestParam(required = false) String titlePhrase,
+            Pageable pageable
     ) {
-        return ResponseEntity.ok(blogPostService.findByFilter(topic, author, titlePhrase));
+        return ResponseEntity.ok(blogPostService.findByFilter(topic, author, titlePhrase, pageable));
     }
 
     @GetMapping(path = "/blogPosts/{blogPostId}", produces = {MediaType.APPLICATION_JSON_VALUE,

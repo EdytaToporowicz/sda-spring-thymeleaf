@@ -1,5 +1,6 @@
 package pl.sda.blogservicedata.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "blogPosts")
 @Table(name = "blog_posts")
 public class BlogPost {

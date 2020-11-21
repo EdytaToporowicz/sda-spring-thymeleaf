@@ -3,6 +3,8 @@ package pl.sda.blogservicedata.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pl.sda.blogservicedata.exception.BlogPostNotFoundException;
 import pl.sda.blogservicedata.model.BlogPost;
@@ -10,6 +12,7 @@ import pl.sda.blogservicedata.model.Topic;
 import pl.sda.blogservicedata.model.mapping.BlogPostMapper;
 import pl.sda.blogservicedata.model.request.BlogPostDto;
 import pl.sda.blogservicedata.repository.BlogPostRepository;
+import pl.sda.blogservicedata.repository.FilteringBlogPostRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,11 +24,13 @@ import java.util.Optional;
 public class BlogPostService {
 
     private final BlogPostRepository blogPostRepository;
+    private final FilteringBlogPostRepository filteringBlogPostRepository;
     private final BlogPostMapper blogPostMapper;
 
     @Autowired
-    public BlogPostService(final BlogPostRepository blogPostRepository, final BlogPostMapper blogPostMapper) {
+    public BlogPostService(final BlogPostRepository blogPostRepository, FilteringBlogPostRepository filteringBlogPostRepository, final BlogPostMapper blogPostMapper) {
         this.blogPostRepository = blogPostRepository;
+        this.filteringBlogPostRepository = filteringBlogPostRepository;
         this.blogPostMapper = blogPostMapper;
     }
 
@@ -44,29 +49,8 @@ public class BlogPostService {
                 () -> new BlogPostNotFoundException("Could not find blog post with id: " + id));
     }
 
-    public List<BlogPost> findByFilter(final Topic topic, final String author, String titlePhrase) {
-        if (topic != null && author != null && titlePhrase != null) {
-            return blogPostRepository.findByFilters(topic, author, titlePhrase);
-        }
-        if (topic != null && author != null) {
-            return blogPostRepository.findAllByTopicAndAuthor(topic, author);
-        }
-        if (topic != null && titlePhrase != null) {
-            return blogPostRepository.findAllByTopicAndTitleContaining(topic, titlePhrase);
-        }
-        if (titlePhrase != null && author != null) {
-            return blogPostRepository.findAllByAuthorAndTitleContaining(author, titlePhrase);
-        }
-        if (titlePhrase != null) {
-            return blogPostRepository.findAllByTitleContaining(titlePhrase);
-        }
-        if (author != null) {
-            return blogPostRepository.findAllByAuthor(author);
-        }
-        if (topic != null) {
-            return blogPostRepository.findAllByTopic(topic);
-        }
-        return blogPostRepository.findAll();
+    public List<BlogPost> findByFilter(final @Nullable Topic topic, final @Nullable String author, final @Nullable String titlePhrase, Pageable pageable) {
+        return filteringBlogPostRepository.filterBlogPosts(topic, author, titlePhrase, pageable);
     }
 
     public void removeById(final long id) {
