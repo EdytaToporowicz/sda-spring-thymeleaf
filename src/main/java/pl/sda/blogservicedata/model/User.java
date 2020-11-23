@@ -5,24 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "topics")
-public class Topic {
+@Table(name = "users")
+public class User {
 
     @Id
+    @GeneratedValue
+    private long id;
+    private String email;
     private String name;
-    private String description;
     @JsonIgnore
-    @ManyToMany(mappedBy = "topics")
+    @OneToMany(mappedBy = "author")
     private List<BlogPost> blogPosts;
+    @JsonIgnore
+    @OneToMany(mappedBy = "author")
+    private List<Comment> comments;
 
 }

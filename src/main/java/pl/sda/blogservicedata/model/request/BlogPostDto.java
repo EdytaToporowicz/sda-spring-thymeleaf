@@ -5,6 +5,7 @@ import lombok.Data;
 import pl.sda.blogservicedata.model.Topic;
 
 import javax.validation.constraints.*;
+import java.util.List;
 
 
 @Data
@@ -12,7 +13,7 @@ import javax.validation.constraints.*;
 public class BlogPostDto {
 
     @NotNull
-    private String author;
+    private long authorId;
     @NotNull
     @Size(min = 5, max = 50)
     @Pattern(regexp = "^\\p{javaUpperCase}.*", message = "Tytuł musi zaczynać się wielką literą")
@@ -21,7 +22,7 @@ public class BlogPostDto {
     @Size(max = 1000)
     private String content;
     @NotNull
-    private Topic topic;
+    private List<String> topics;
 
 //    @AssertTrue(message = "Tytuł musi zaczynać się wielką literą")
 //    public boolean isTitleValid() {
