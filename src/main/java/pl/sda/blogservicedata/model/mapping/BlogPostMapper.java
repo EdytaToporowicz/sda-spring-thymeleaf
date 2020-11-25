@@ -30,7 +30,7 @@ public class BlogPostMapper {
         blogPost.setTitle(blogPostDto.getTitle());
         blogPost.setContent(blogPostDto.getContent());
         List<Topic> topicsList = blogPostDto.getTopics().stream()
-                .map(topic -> topicRepository.findById(topic)
+                .map(topic -> topicRepository.findByName(topic)
                         .orElseThrow(() -> new TopicNotFoundException("Topic not found in catalogue: " + topic)))
                 .collect(Collectors.toList());
         blogPost.setTopics(topicsList);

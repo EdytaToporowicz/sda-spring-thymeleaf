@@ -15,7 +15,7 @@ public class TopicService {
     }
 
     public Topic createTopic(TopicDto topicDto) {
-        Topic topic = new Topic(topicDto.getName(), topicDto.getDescription(), null);
+        Topic topic = new Topic(null, topicDto.getName(), null);
         return topicRepository.save(topic);
     }
 }

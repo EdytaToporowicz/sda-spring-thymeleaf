@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pl.sda.blogservicedata.exception.BlogPostNotFoundException;
+import pl.sda.blogservicedata.exception.TopicNotFoundException;
 import pl.sda.blogservicedata.exception.UserNotFoundException;
 import pl.sda.blogservicedata.model.BlogPost;
 import pl.sda.blogservicedata.model.Topic;
@@ -19,9 +20,9 @@ import pl.sda.blogservicedata.repository.TopicRepository;
 import pl.sda.blogservicedata.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -35,10 +36,18 @@ public class BlogPostService {
     private TopicRepository topicRepository;
 
     @Autowired
-    public BlogPostService(final BlogPostRepository blogPostRepository, FilteringBlogPostRepository filteringBlogPostRepository, final BlogPostMapper blogPostMapper) {
+    public BlogPostService(
+            BlogPostRepository blogPostRepository,
+            FilteringBlogPostRepository filteringBlogPostRepository,
+            BlogPostMapper blogPostMapper,
+            UserRepository userRepository,
+            TopicRepository topicRepository
+    ) {
         this.blogPostRepository = blogPostRepository;
         this.filteringBlogPostRepository = filteringBlogPostRepository;
         this.blogPostMapper = blogPostMapper;
+        this.userRepository = userRepository;
+        this.topicRepository = topicRepository;
     }
 
     public BlogPost save(final BlogPostDto blogPostDto) {
@@ -56,16 +65,18 @@ public class BlogPostService {
                 () -> new BlogPostNotFoundException("Could not find blog post with id: " + id));
     }
 
-    public List<BlogPost> findByFilter(final @Nullable List<String> topicsIds, final @Nullable Long authorId, final @Nullable String titlePhrase, @Nullable Pageable pageable) {
+    public List<BlogPost> findByFilter(final @Nullable List<String> topics, final @Nullable Long authorId, final @Nullable String titlePhrase, @Nullable Pageable pageable) {
         User author = null;
-        List<Topic> topics = null;
+        List<Topic> topicsFromDb = null;
         if (authorId != null) {
             author = userRepository.findById(authorId).orElseThrow(() -> new UserNotFoundException("User not found: " + authorId));
         }
-        if (topicsIds != null && !topicsIds.isEmpty()) {
-            topics = topicRepository.findAllById(topicsIds);
+        if (topics != null && !topics.isEmpty()) {
+            topicsFromDb = topics.stream().map(topic -> topicRepository.findByName(topic)
+                    .orElseThrow(() -> new TopicNotFoundException("Topic not found: " + topic)))
+                    .collect(Collectors.toList());
         }
-        return filteringBlogPostRepository.filterBlogPosts(topics, author, titlePhrase, pageable);
+        return filteringBlogPostRepository.filterBlogPosts(topicsFromDb, author, titlePhrase, pageable);
     }
 
     public void removeById(final long id) {

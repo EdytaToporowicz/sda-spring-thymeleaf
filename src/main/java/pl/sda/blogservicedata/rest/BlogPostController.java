@@ -30,9 +30,9 @@ public class BlogPostController {
             @RequestParam(required = false) String titlePhrase,
             @RequestParam(required = false) Pageable pageable
     ) {
-//        if(topic == null && authorId == null && titlePhrase == null && pageable == null) {
-//            return ResponseEntity.ok(blogPostService.findAll());
-//        }
+        if(topics == null && authorId == null && titlePhrase == null && pageable == null) {
+            return ResponseEntity.ok(blogPostService.findAll());
+        }
         return ResponseEntity.ok(blogPostService.findByFilter(topics, authorId, titlePhrase, pageable));
     }
 

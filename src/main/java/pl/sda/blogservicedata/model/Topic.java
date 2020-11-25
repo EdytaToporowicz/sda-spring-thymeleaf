@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -19,8 +16,10 @@ import java.util.List;
 public class Topic {
 
     @Id
+    @GeneratedValue
+    private Long id;
+    @Column(unique = true)
     private String name;
-    private String description;
     @JsonIgnore
     @ManyToMany(mappedBy = "topics")
     private List<BlogPost> blogPosts;
