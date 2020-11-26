@@ -3,10 +3,8 @@ package pl.sda.blogservicedata.rest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import pl.sda.blogservicedata.model.BlogPost;
-import pl.sda.blogservicedata.model.Topic;
 import pl.sda.blogservicedata.model.request.BlogPostDto;
 import pl.sda.blogservicedata.service.BlogPostService;
 
@@ -25,15 +23,15 @@ public class BlogPostController {
 
     @GetMapping(path = "/blogPosts", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<List<BlogPost>> findByFilter(
-            @RequestParam(required = false) List<String> topics,
+            @RequestParam(required = false) String topic,
             @RequestParam(required = false) Long authorId,
             @RequestParam(required = false) String titlePhrase,
             @RequestParam(required = false) Pageable pageable
     ) {
-        if(topics == null && authorId == null && titlePhrase == null && pageable == null) {
+        if (topic == null && authorId == null && titlePhrase == null && pageable == null) {
             return ResponseEntity.ok(blogPostService.findAll());
         }
-        return ResponseEntity.ok(blogPostService.findByFilter(topics, authorId, titlePhrase, pageable));
+        return ResponseEntity.ok(blogPostService.findByFilter(topic, authorId, titlePhrase, pageable));
     }
 
     @GetMapping(path = "/blogPosts/{blogPostId}", produces = {MediaType.APPLICATION_JSON_VALUE,

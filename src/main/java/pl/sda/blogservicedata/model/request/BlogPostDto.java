@@ -2,9 +2,10 @@ package pl.sda.blogservicedata.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import pl.sda.blogservicedata.model.Topic;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 

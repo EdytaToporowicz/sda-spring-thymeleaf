@@ -22,7 +22,6 @@ import pl.sda.blogservicedata.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -65,18 +64,17 @@ public class BlogPostService {
                 () -> new BlogPostNotFoundException("Could not find blog post with id: " + id));
     }
 
-    public List<BlogPost> findByFilter(final @Nullable List<String> topics, final @Nullable Long authorId, final @Nullable String titlePhrase, @Nullable Pageable pageable) {
+    public List<BlogPost> findByFilter(final @Nullable String topic, final @Nullable Long authorId, final @Nullable String titlePhrase, @Nullable Pageable pageable) {
         User author = null;
-        List<Topic> topicsFromDb = null;
+        Topic topicFromDb = null;
         if (authorId != null) {
             author = userRepository.findById(authorId).orElseThrow(() -> new UserNotFoundException("User not found: " + authorId));
         }
-        if (topics != null && !topics.isEmpty()) {
-            topicsFromDb = topics.stream().map(topic -> topicRepository.findByName(topic)
-                    .orElseThrow(() -> new TopicNotFoundException("Topic not found: " + topic)))
-                    .collect(Collectors.toList());
+        if (topic != null) {
+            topicFromDb = topicRepository.findByName(topic)
+                    .orElseThrow(() -> new TopicNotFoundException("Topic not found: " + topic));
         }
-        return filteringBlogPostRepository.filterBlogPosts(topicsFromDb, author, titlePhrase, pageable);
+        return filteringBlogPostRepository.filterBlogPosts(topicFromDb, author, titlePhrase, pageable);
     }
 
     public void removeById(final long id) {

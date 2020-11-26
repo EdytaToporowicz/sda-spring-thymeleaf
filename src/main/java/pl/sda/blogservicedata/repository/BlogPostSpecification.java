@@ -4,17 +4,20 @@ package pl.sda.blogservicedata.repository;
 import org.springframework.data.jpa.domain.Specification;
 import pl.sda.blogservicedata.model.BlogPost;
 import pl.sda.blogservicedata.model.Topic;
-
-import java.time.LocalDateTime;
+import pl.sda.blogservicedata.model.User;
 
 public class BlogPostSpecification {
 
     public static Specification<BlogPost> hasTopic(Topic topic) {
-        return (Specification<BlogPost>) (root, criteriaQuery, criteriaBuilder) ->
-                topic != null ? criteriaBuilder.equal(root.get("topic"), topic): null;
+        return (Specification<BlogPost>) (root, criteriaQuery, criteriaBuilder) -> {
+            if (topic != null) {
+                return criteriaBuilder.isMember(topic, root.get("topics"));
+            }
+            return null;
+        };
     }
 
-    public static Specification<BlogPost> hasAuthor(String author) {
+    public static Specification<BlogPost> hasAuthor(User author) {
         return (Specification<BlogPost>) (root, criteriaQuery, criteriaBuilder) ->
                 author != null ? criteriaBuilder.equal(root.get("author"), author) : null;
     }
@@ -24,9 +27,4 @@ public class BlogPostSpecification {
                 titlePhrase != null ? criteriaBuilder.like(root.get("title"), "%" + titlePhrase + "%") : null;
     }
 
-    public static Specification<BlogPost> wasCreatedBetween(LocalDateTime from, LocalDateTime to) {
-        return (Specification<BlogPost>) (root, criteriaQuery, criteriaBuilder) ->
-                from != null && to != null ?
-                        criteriaBuilder.between(root.get("created"), from, to) : null;
-    }
 }
