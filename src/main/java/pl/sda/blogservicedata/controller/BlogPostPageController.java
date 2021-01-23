@@ -2,6 +2,7 @@ package pl.sda.blogservicedata.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import pl.sda.blogservicedata.model.BlogPost;
 import pl.sda.blogservicedata.model.Topic;
@@ -9,6 +10,7 @@ import pl.sda.blogservicedata.model.request.BlogPostForm;
 import pl.sda.blogservicedata.service.BlogPostService;
 import pl.sda.blogservicedata.service.TopicService;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +55,10 @@ public class BlogPostPageController {
     }
 
     @PostMapping("/blogPostForm")
-    public String createBlogPost(@ModelAttribute("blogPostForm") BlogPostForm blogPostForm) {
+    public String createBlogPost(@ModelAttribute("blogPostForm") @Valid BlogPostForm blogPostForm, Errors errors) {
+        if (errors.hasErrors()) {
+            return "blogPostForm";
+        }
         blogPostService.saveForm(blogPostForm);
         return "redirect:blogPosts";
     }

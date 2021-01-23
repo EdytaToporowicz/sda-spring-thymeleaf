@@ -36,6 +36,9 @@
             <div class="form-grop row">
                 <label class="col-2" for="title">Tytuł</label>
                 <input class="col-8 form-control" placeholder="title" type="text" id="title" th:field="*{title}"></input>
+                <ul th:if="${#fields.hasErrors('title')}">
+                    <li class="alert alert-danger" th:each="error : ${#fields.errors('title')}" th:text="${error}"></li>
+                </ul>
             </div>
             <div class="form-grop row">
                 <label class="col-2" for="content">Treść</label>
