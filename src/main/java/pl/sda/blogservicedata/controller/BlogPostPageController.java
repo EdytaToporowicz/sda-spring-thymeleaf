@@ -3,6 +3,7 @@ package pl.sda.blogservicedata.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.sda.blogservicedata.model.BlogPost;
 import pl.sda.blogservicedata.model.Topic;
@@ -35,5 +36,12 @@ public class BlogPostPageController {
         model.addAttribute("blogPosts", blogPostList);
         model.addAttribute("topics", topics);
         return "blogPosts";
+    }
+
+    @GetMapping("/blogPosts/{blogPostId}")
+    public String blogPostsDetails(Model model, @PathVariable Long blogPostId) {
+        final BlogPost blogPost = blogPostService.findById(blogPostId);
+        model.addAttribute("blogPost", blogPost);
+        return "blogPostDetails";
     }
 }
