@@ -55,8 +55,11 @@ public class BlogPostPageController {
     }
 
     @PostMapping("/blogPostForm")
-    public String createBlogPost(@ModelAttribute("blogPostForm") @Valid BlogPostForm blogPostForm, Errors errors) {
+    public String createBlogPost(@ModelAttribute("blogPostForm") @Valid BlogPostForm blogPostForm, Errors errors,
+                                 Model model) {
         if (errors.hasErrors()) {
+            List<Topic> topics = topicService.findAll();
+            model.addAttribute("topics", topics);
             return "blogPostForm";
         }
         blogPostService.saveForm(blogPostForm);
