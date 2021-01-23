@@ -14,6 +14,7 @@ import pl.sda.blogservicedata.model.Topic;
 import pl.sda.blogservicedata.model.User;
 import pl.sda.blogservicedata.model.mapping.BlogPostMapper;
 import pl.sda.blogservicedata.model.request.BlogPostDto;
+import pl.sda.blogservicedata.model.request.BlogPostForm;
 import pl.sda.blogservicedata.repository.BlogPostRepository;
 import pl.sda.blogservicedata.repository.FilteringBlogPostRepository;
 import pl.sda.blogservicedata.repository.TopicRepository;
@@ -22,6 +23,7 @@ import pl.sda.blogservicedata.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -87,4 +89,16 @@ public class BlogPostService {
                         });
     }
 
+    public void saveForm(BlogPostForm blogPostForm) {
+        BlogPost blogPost = new BlogPost();
+        blogPost.setTitle(blogPostForm.getTitle());
+        blogPost.setContent(blogPostForm.getContent());
+        List<Topic> selectedTopics = blogPostForm.getSelectedTopics().stream().map(topic -> topicRepository.findByName(topic).orElseThrow(() ->
+                new TopicNotFoundException("Topic not found: " + topic))).collect(Collectors.toList());
+        blogPost.setTopics(selectedTopics);
+        User author = userRepository.findByEmail(blogPostForm.getAuthorEmail()).orElseThrow(() ->
+                new UserNotFoundException("Not found user: " + blogPostForm.getAuthorEmail()));
+        blogPost.setAuthor(author);
+        blogPostRepository.save(blogPost);
+    }
 }

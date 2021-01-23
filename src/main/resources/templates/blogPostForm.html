@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <title>Blog</title>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">My Blog</span>
+    <div class="navbar">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Eksploruj</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Napisz posta</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Zaloguj się</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<hr>
+
+<div class="container">
+    <div class="justify-content-center mt-5">
+
+        <form method="POST" th:action="@{/blogPostForm}" th:object="${blogPostForm}">
+            <div class="form-grop row">
+                <label class="col-2" for="title">Tytuł</label>
+                <input class="col-8 form-control" placeholder="title" type="text" id="title" th:field="*{title}"></input>
+            </div>
+            <div class="form-grop row">
+                <label class="col-2" for="content">Treść</label>
+                <textarea class="col-8 form-control" type="text" id="content" th:field="*{content}"></textarea>
+            </div>
+            <div class="form-grop row">
+                <label class="col-2" for="authorEmail">Email autora</label>
+                <textarea class="col-8 form-control" type="text" id="authorEmail" th:field="*{authorEmail}"></textarea>
+            </div>
+            <div class="form-grop row">
+                <label class="col-2" for="topics">Tematy</label>
+                <select multiple class="form-control" th:field="*{selectedTopics}" id="topics">
+                    <option th:each="topic : ${topics}" th:value="${topic.name}" th:text="${topic.name}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary row">Publikuj</button>
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
+
+

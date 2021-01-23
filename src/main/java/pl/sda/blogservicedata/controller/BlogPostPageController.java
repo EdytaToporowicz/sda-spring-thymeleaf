@@ -2,11 +2,10 @@ package pl.sda.blogservicedata.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import pl.sda.blogservicedata.model.BlogPost;
 import pl.sda.blogservicedata.model.Topic;
+import pl.sda.blogservicedata.model.request.BlogPostForm;
 import pl.sda.blogservicedata.service.BlogPostService;
 import pl.sda.blogservicedata.service.TopicService;
 
@@ -43,5 +42,19 @@ public class BlogPostPageController {
         final BlogPost blogPost = blogPostService.findById(blogPostId);
         model.addAttribute("blogPost", blogPost);
         return "blogPostDetails";
+    }
+
+    @GetMapping("/blogPostForm")
+    public String blogPostForm(Model model) {
+        model.addAttribute("blogPostForm", new BlogPostForm());
+        List<Topic> topics = topicService.findAll();
+        model.addAttribute("topics", topics);
+        return "blogPostForm";
+    }
+
+    @PostMapping("/blogPostForm")
+    public String createBlogPost(@ModelAttribute("blogPostForm") BlogPostForm blogPostForm) {
+        blogPostService.saveForm(blogPostForm);
+        return "redirect:blogPosts";
     }
 }
